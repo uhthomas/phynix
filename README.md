@@ -7,7 +7,8 @@ lack of interest and time, it was never launched.
 Phynix was hosted on [phynix.io](https://phynix.io), but has not been renewed.
 
 This repository serves as an archive for the final state of the project. The
-original, untouched source can be found on the [archive branch](/uhthomas/phynix/branches/archive).
+original, untouched source can be found on the
+[archive branch](https://github.com/uhthomas/phynix/tree/archive).
 
 ## Involvement
 There was lots of involvement from previous members of the Plug DJ, but Phynix
