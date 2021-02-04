@@ -1,0 +1,55 @@
+@{
+  import (
+    "phynix/templates/layout/base"
+  )
+
+  var text string
+  var token string
+}
+
+@section title {
+  @raw("Verifcation")
+}
+
+@section head {
+  <style type="text/css">
+    .wrapper > .content .hero {
+      height: 200px;
+      background-image: url(/s/icon.png);
+      background-size: 128px 128px;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .wrapper > .content > .title {
+      font-size: 24px;
+    }
+
+    .wrapper > .content > .title > .text {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    .wrapper > .content > .title > .text a {
+      color: #2196f3;
+    }
+  </style>
+  <script type="text/javascript">
+    (function() {
+      var token = "@token";
+      if (!token) return;
+      localStorage.setItem('token', token);
+      setTimeout(function() {
+        window.location = '/dashboard';
+      }, 5 * 1000);
+    })();
+  </script>
+}
+
+@section content {
+  <div class="hero"></div>
+  <div class="title">
+    Verification
+    <div class="text">@raw(@text)</div>
+  </div>
+}

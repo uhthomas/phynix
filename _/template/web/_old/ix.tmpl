@@ -1,0 +1,287 @@
+<!doctype html>
+<html>
+<head>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="//cdn.materialdesignicons.com/1.3.41/css/materialdesignicons.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css">
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: row;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 300;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.6) 75%, rgba(0, 0, 0, 0.8) 100%), url(https://confectionery.6f.io/569a4855268810252f000012.jpg);
+      background-size: cover;
+      background-position: center;
+      color: white;
+    }
+
+    a {
+      color: #3498db;
+      text-decoration: none;
+    }
+
+    .room {
+      flex: 1;
+    }
+
+    .bar {
+      width: 100%;
+      height: 56px;
+      background: #1A2026;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .logo {
+      background: #222937;
+      color: #e67e22;
+      font-size: 28px;
+      line-height: 56px;
+      text-align: center;
+      height: 56px;
+      width: 56px;
+      cursor: pointer;
+      -webkit-user-select: none;
+      font-family: Arial, sans-serif;
+      font-weight: 500;
+    }
+
+    .community-info {
+      max-width: 300px;
+      height: 56px;
+    }
+
+    .community-info,
+    .playing-info {
+      display: flex;
+      flex-direction: row;
+      padding: 6px;
+      box-sizing: border-box;
+    }
+
+    .community-info .mdi,
+    .playing-info .mdi {
+      font-size: 32px;
+      width: 44px;
+      line-height: 44px;
+      color: #f2f2f2;
+      text-align: center;
+    }
+
+    .community-info .s,
+    .playing-info .s {
+      padding: 2px 0px;
+      flex: 1;
+    }
+
+    .community-info .name,
+    .community-info .host,
+    .playing-info .title,
+    .playing-info .dj {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .community-info .name,
+    .playing-info .title {
+      font-size: 20px;
+      top: 0
+    }
+
+    .community-info .host,
+    .playing-info .dj {
+      font-size: 14px;
+      bottom: 0;
+    }
+
+    .community-info .host::before {
+      content: 'hosted by: ';
+      color: #555d70;
+    }
+
+    .playing-info .dj::before {
+      content: 'current dj: ';
+      color: #555d70;
+    }
+
+    .playing-info {
+      flex: 1;
+      padding: 6px;
+    }
+
+    .bar .sep {
+      width: 1px;
+      margin: 10px 6px;
+      height: 34px;
+      background: #808691;
+    }
+
+    .tray {
+      width: 356px;
+      background: #111317;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tray .sections {
+      height: 56px;
+      background: #1A2026;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .tray .sections > * {
+      line-height: 56px;
+      text-align: center;
+      font-size: 26px;
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .tray .sections > * .mdi {
+      font-size: 24px;
+      margin-right: 5px;
+    }
+
+    .tray .sections > * .variant {
+      font-size: 18px;
+      color: #555d70;
+    }
+
+    .tray .sections .active {
+      background: #111317;
+    }
+
+    .tray .content {
+      flex: 1;
+      position: relative;
+    }
+
+    .tray .content .chat {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+    }
+
+    .tray .content .chat .message {
+      box-sizing: border-box;
+      padding: 10px;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .tray .content .chat .message:nth-child(2n) {
+      background: #1c1f25;
+    }
+
+    .tray .content .chat .message .img {
+      background-image: url(https://confectionery.6f.io/5699a8c4268810252f000010.jpg);
+      background-size: cover;
+      background-position: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    .tray .content .chat .message .s {
+      margin-left: 10px;
+      flex: 1;
+    }
+
+    .tray .content .chat .message .s .name {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .tray .footer {
+      height: 56px;
+      background: #1A2026;
+    }
+
+    .tray .footer .img {
+      background-image: url(https://confectionery.6f.io/5699a8c4268810252f000010.jpg);
+      background-size: cover;
+      background-position: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin: 8px;
+    }
+  </style>
+</head>
+<body><!--
+  <div class="room">
+    <nav class="bar">
+        <div class="logo">P</div>
+        <div class="community-info">
+          <i class="mdi mdi-album"></i>
+          <div class="s">
+            <div class="name">Nice banter</div>
+            <div class="host">Thomas</div>
+          </div>
+        </div>
+        <div class="sep"></div>
+        <div class="playing-info">
+          <i class="mdi mdi-account-star-variant"></i>
+          <div class="s">
+            <div class="title">[Future Bass] Madeon - More like dye m7 (Mark's A Hoe remix)</div>
+            <div class="dj">Mark</div>
+          </div>
+        </div>
+        </div>
+    </nav>
+  </div>
+  <div class="tray">
+    <nav class="sections">
+      <div class="chat active"><i class="mdi mdi-comment-multiple-outline"></i>Chat</div>
+      <div class="population"><i class="mdi mdi-account-multiple"></i>150</div>
+      <div class="waitlist"><i class="mdi mdi-account-convert"></i>37<span class="variant">/46</span></div>
+    </nav>
+    <div class="content">
+      <div class="chat">
+        <div class="message">
+          <div class="img"></div>
+          <div class="s">
+            <div class="name">Thomas</div>
+            <div class="text">Yeah, okay <a target="_blank" href="https://confectionery.6f.io">confectionery.6f.io</a></div>
+            <div class="text">when the second message is p dank</div>
+          </div>
+        </div>
+        <div class="message">
+          <div class="img" style="background-image: url(https://confectionery.6f.io/5699a9e9268810252f000011.png);"></div>
+          <div class="s">
+            <div class="name">Mark</div>
+            <div class="text"><a target="_blank" href="https://confectionery.6f.io">confectionery.6f.io</a> IS FUCKING GAY MATE</div>
+          </div>
+        </div>
+        <div class="message">
+          <div class="img"></div>
+          <div class="s">
+            <div class="name">Thomas</div>
+            <div class="text">F U C K YOU</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="img"></div>
+    </div>-->
+  </div>
+</body>
+</html>

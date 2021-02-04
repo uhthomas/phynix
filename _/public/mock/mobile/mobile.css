@@ -1,0 +1,192 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+  background: black;
+}
+
+body {
+  max-width: 720px;
+  max-height: 1280px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fafafa;
+  font-family: 'Roboto', sans-serif;
+  color: rgba(0,0,0,0.87);
+  position: relative;
+}
+
+.header {
+  height: 64px;
+  flex-shrink: 0;
+  background: #607D8B;
+  color: white;
+  display: flex;
+  background: #323742;
+}
+
+.header .mdi {
+  font-size: 24px;
+  width: 64px;
+  height: 64px;
+  line-height: 64px;
+  text-align: center;
+}
+
+.header .title {
+  line-height: 64px;
+  font-size: 20px;
+  margin-right: auto;
+}
+
+.media {
+  width: 720px;
+  height: 405px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.media::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url(thumbnail.jpg);
+  background-size: cover;
+  background-position: center;
+}
+
+.navigation {
+  flex: 1;
+  background: #282c35;
+  display: flex;
+  flex-direction: column;
+}
+
+.navigation .tabs {
+  height: 56px;
+  flex-shrink: 0;
+  background: #323742;
+  display: flex;
+  color: white;
+  text-transform: uppercase;
+}
+
+.navigation .tabs .tab {
+  flex: 1;
+  font-size: 20px;
+  line-height: 56px;
+  text-align: center;
+}
+
+.navigation .tabs .tab.chat {
+  box-shadow: inset 0 -3px 0 0 #eaeaea;
+}
+
+.navigation .section.chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.navigation .section.chat .messages {
+  flex: 1;
+}
+
+.navigation .section.chat .messages .message {
+  display: flex;
+  color: white;
+}
+
+.navigation .section.chat .messages .message:nth-child(2n+1) {
+  background: #1c1f25;
+}
+
+.navigation .section.chat .messages .message .avatar {
+  width: 48px;
+  height: 48px;
+  margin: 8px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+}
+
+.navigation .section.chat .messages .message .content {
+  flex: 1;
+  margin: 8px;
+}
+
+.navigation .section.chat .messages .message .content .username {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.navigation .section.chat .messages .message .content .username.staff {
+  color: #03A9F4;
+}
+
+.navigation .section.chat .messages .message .content .username.admin {
+  color: #FF6600;
+}
+
+.navigation .section.chat .messages .message .content .username .icon {
+  margin-right: 2px;
+  width: 18px;
+  height: 22px;
+  line-height: 22px;
+}
+
+.navigation .section.chat .messages .message .content .username .icon.admin {
+  background-image: url(/s/icon.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 18px;
+  display: block;
+  float: left;
+}
+
+.navigation .section.chat .messages .message .content .text {
+  width: 100%;
+}
+
+.navigation .section.chat .footer {
+  height: 64px;
+  background: #323742;
+  display: flex;
+}
+
+.navigation .section.chat .footer .avatar {
+  width: 48px;
+  height: 48px;
+  margin: 8px;
+  background-image: url(avi-2.jpg);
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+}
+
+.navigation .section.chat .footer input {
+  flex: 1;
+  background: 0;
+  border: 0;
+  padding: 0;
+  margin-left: 8px;
+  outline: 0;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+}
+
+.navigation .section.chat .footer .mdi-send {
+  font-size: 24px;
+  width: 64px;
+  height: 64px;
+  line-height: 64px;
+  text-align: center;
+  color: white;
+}

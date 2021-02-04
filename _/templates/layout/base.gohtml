@@ -1,0 +1,142 @@
+@{
+  var body string
+  var title string
+  var head string
+  var content string
+}
+
+<!doctype html>
+<html>
+<head>
+  <title>@title</title>
+  <meta charset="utf-8">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,300,700' rel='stylesheet' type='text/css'>
+  <link href="/s/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" media="all">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-73065452-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      background: #282c35;
+      font-family: 'Roboto', sans-serif;
+      color: white;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: white;
+    }
+
+    .wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      max-width: 1084px;
+      min-width: 542px;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 10px;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .wrapper > .content {
+      text-align: center;
+      min-height: 400px;
+    }
+
+    .wrapper > .footer {
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+    }
+
+    .wrapper > .footer .link {
+      float: left;
+      padding: 8px;
+    }
+
+    .wrapper > .footer > .mdi {
+      float: right;
+      margin: 8px;
+      padding: 8px;
+      border-radius: 50%;
+    }
+
+    .wrapper > .footer > .mdi-reddit {
+      background: #ff5700;
+    }
+
+    .wrapper > .footer > .mdi-twitter {
+      background: #00aced;
+    }
+
+    .wrapper > .footer > .mdi-facebook {
+      background: #3b5998;
+    }
+
+    @@media all and (max-width: 552px) {
+      .wrapper {
+        min-width: 470px!important;
+      }
+    }
+
+    @@media all and (max-width: 490px) {
+      .wrapper {
+        min-width: 400px!important;
+      }
+
+      .wrapper > .footer {
+        text-align: center!important;
+      }
+
+      .wrapper > .footer > .link {
+        float: none!important;
+      }
+
+      .wrapper > .footer > .mdi {
+        display: none!important;
+      }
+    }
+  </style>
+  @head
+</head>
+<body>
+  <div class="wrapper">
+    <div class="content">
+      @content
+    </div>
+    <div class="footer">
+      <a target="_blank" href="/blog" class="link">Blog</a>
+      <a target="_blank" href="/support" class="link">Support</a>
+      <a target="_blank" href="/team" class="link">Team</a>
+      <a target="_blank" href="/privacy" class="link">Privacy</a>
+      <a target="_blank" href="https://reddit.com/r/Phynixio" class="mdi mdi-reddit"></a>
+      <a target="_blank" href="https://twitter.com/phynixio" class="mdi mdi-twitter"></a>
+      <a target="_blank" href="https://facebook.com/Phynixio-1025652290840438/" class="mdi mdi-facebook"></a>
+    </div>
+  </div>
+  @body
+</body>
+</html>

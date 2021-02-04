@@ -1,0 +1,101 @@
+@{
+  var body string
+  var title string
+  var head string
+  var content string
+}
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>@title</title>
+  <link rel="shortcut icon" href="/s/favicon.ico">
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,300,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="//cdn.materialdesignicons.com/1.3.41/css/materialdesignicons.min.css">
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      background: #1A2026;
+      font-family: 'Roboto', sans-serif;
+      color: white;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrapper {
+      position: relative;
+      top: 0;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      max-width: 1060px;
+      min-width: 530px;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 10px 10px 10px;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .wrapper > .content {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wrapper > .footer {
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+    }
+
+    .wrapper .footer .link {
+      float: left;
+      margin-right: 20px;
+    }
+
+    .wrapper .footer .mdi {
+      float: right;
+      margin-left: 10px;
+      padding: 8px;
+      border-radius: 50%;
+    }
+
+    .wrapper .footer .mdi-reddit {
+      background: #ff5700;
+    }
+
+    .wrapper .footer .mdi-twitter {
+      background: #00aced;
+    }
+
+    .wrapper .footer .mdi-facebook {
+      background: #3b5998;
+    }
+  </style>
+  @head
+</head>
+<body>
+  @body
+  <div class="wrapper">
+    <div class="content">@content</div>
+    <div class="footer">
+      <span class="link">Blog</span>
+      <span class="link">Support</span>
+      <span class="link">Team</span>
+      <i class="mdi mdi-reddit"></i>
+      <i class="mdi mdi-twitter"></i>
+      <i class="mdi mdi-facebook"></i>
+    </div>
+  </div>
+</body>
+</html>

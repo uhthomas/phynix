@@ -1,0 +1,5 @@
+package socket
+
+func New() {
+
+}

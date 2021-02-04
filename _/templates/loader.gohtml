@@ -1,0 +1,411 @@
+<!doctype html>
+<html>
+<head>
+  <title>Phynix</title>
+  <meta charset="utf-8">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,300,700' rel='stylesheet' type='text/css'>
+  <link href="/s/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" media="all">
+  <link href="/s/css/app.css" rel="stylesheet" type="text/css">
+  <script src="/s/js/jquery.js" type="text/javascript"></script>
+  <script src="/s/js/angular.js" type="text/javascript"></script>
+  <script src="/s/js/angular-inview.js" type="text/javascript"></script>
+  <!-- <script src="/s/js/angular-jscrollpane.js" type="text/javascript"></script>
+  <script src="/s/js/angular-sortable.js" type="text/javascript"></script> -->
+  <script src="/s/js/kyou.js" type="text/javascript"></script>
+  <script src="/s/js/moment.js" type="text/javascript"></script>
+  <script src="/s/js/moment-format.js" type="text/javascript"></script>
+  <script src="/s/js/raiki.js" type="text/javascript"></script>
+  <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+
+  <link type="text/css" href="/s/css/jquery.jscrollpane.css" rel="stylesheet" media="all" />
+  <script src="/s/js/jquery.mousewheel.js" type="text/javascript"></script>
+  <script src="/s/js/jquery.jscrollpane.js" type="text/javascript"></script>
+
+  <script src="/s/js/embed.js"></script>
+  <script>
+    var client = algoliasearch("IL54TIA6D9", "6e546a694e2b02e5f45bf0847a2f504c");
+    var index = client.initIndex('community');
+  </script>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-73065452-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+</head>
+<body ng-app="phynix" ng-controller="main">
+  <div id="loading">
+    <div class="content">
+      <div class="logo"></div>
+      <div class="text">Turning up</div>
+    </div>
+  </div>
+  <div id="app">
+    <div class="header">
+      <div class="sidebar" ng-class="{'deployed':views.sidebarDeployed}" ng-click="sidebarListener()">
+        <div class="icon"></div>
+        <div class="title">Phynix</div>
+        <div class="items">
+          <div class="item">
+            <i class="mdi mdi-account-multiple"></i>
+            <span class="text">Communities</span>
+          </div>
+          <a class="item" href="/support" target="_blank">
+            <i class="mdi mdi-help"></i>
+            <span class="text">Support</span>
+          </a>
+          <a class="item" href="/blog" target="_blank">
+            <i class="mdi mdi-newspaper"></i>
+            <span class="text">Blog</span>
+          </a>
+          <a class="item" href="/api" target="_blank">
+            <i class="mdi mdi-code-tags"></i>
+            <span class="text">API</span>
+          </a>
+          <a class="item" href="/support/bug" target="_blank">
+            <i class="mdi mdi-bug"></i>
+            <span class="text">Report A Bug</span>
+          </a>
+          <a class="item no-icon" href="/terms" target="_blank">
+            <span class="text">Terms</span>
+          </a>
+          <a class="item no-icon" href="/privacy" target="_blank">
+            <span class="text">Privacy</span>
+          </a>
+          <a class="item logout" href="/logout">
+            <i class="mdi mdi-logout"></i>
+            <span class="text">Logout</span>
+          </a>
+        </div>
+      </div>
+      <div class="info-icon mdi mdi-music-note"></div>
+      <div class="info">
+        <div class="name">{{ community.meta.name }}</div>
+        <div class="host">{{ community.meta.host.displayname }}</div>
+      </div>
+      <div class="divider"></div>
+      <div class="media-icon mdi mdi-play"></div>
+      <div class="media">
+        <div class="name">{{ community.media ? community.media.item.artist + ' - ' + community.media.item.title : 'Nobody is playing' }}</div>
+        <div class="dj">{{ getUser(community.media.userID).displayname || 'None' }}</div>
+      </div>
+      <div class="player">
+        <div class="remaining" ng-class="{ 'hidden': !community.media }">
+          <i class="mdi mdi-clock"></i>
+          <span class="text" ng-class="{ 'red': (community.media.item.duration - community.media.elapsed) < 6 }">{{ toDuration(community.media.item.duration - community.media.elapsed) }}</span>
+        </div>
+        <div class="volume">
+          <input type="range" min="0" max="100" ng-model="settings.volume">
+          <i class="mdi" ng-class="{ 'mdi-volume-high': settings.volume >= 70, 'mdi-volume-medium': settings.volume >= 20 && settings.volume < 70, 'mdi-volume-low': settings.volume > 0 && settings.volume < 20, 'mdi-volume-off': settings.volume == 0 }" ng-click="toggleVolume()"></i>
+          <span class="text">{{ settings.volume }}%</span>
+        </div>
+      </div>
+      <div class="user">
+        <div class="avatar"></div>
+        <div class="info">
+          <div class="name">{{ user.displayname }}</div>
+          <div class="followers">{{ user.points }}</div>
+        </div>
+        <div class="settings mdi mdi-settings"></div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="media">
+        <div class="playback">
+          <i class="mdi fullscreen" ng-class="{'mdi-fullscreen': !fullscreen, 'mdi-fullscreen-exit': fullscreen}" ng-click="toggleFullscreen()"></i>
+          <div class="meta">
+            <div class="buffered" style="width: {{ community.media.buffered }}%;"></div>
+            <div class="elapsed" style="width: {{ (community.media.elapsed / community.media.item.duration) * 100 }}%;"></div>
+          </div>
+        </div>
+        <div class="user">
+          <div class="waitlist" ng-click="joinWaitlist()">
+            <i class="icon mdi mdi-play"></i>
+            <i class="icon mdi mdi-close"></i>
+            <div class="text">Join Wait List</div>
+          </div>
+          <div class="votes">
+            <div class="vote woot" ng-class="{'active':community.media.votes.woots.indexOf(user.id) > -1,'disabled':community.media.userID === user.id || !community.media,'voted':community.media.votes.woots.length}" ng-click="woot()">
+              <div class="head">
+                <i class="mdi mdi-chevron-up"></i>
+                Woot!
+              </div>
+              <div class="total">{{ community.media.votes.woots.length || 0 }}</div>
+            </div>
+            <div class="vote save" ng-class="{'active':community.media.votes.saves.indexOf(user.id) > -1,'disabled':community.media.userID === user.id || !community.media,'voted':community.media.votes.saves.length}" ng-click="showAddToModal(true)">
+              <div class="head">
+                <i class="mdi mdi-star"></i>
+                Save
+              </div>
+              <div class="total">{{ community.media.votes.saves.length || 0 }}</div>
+            </div>
+            <div class="vote meh" ng-class="{'active':community.media.votes.mehs.indexOf(user.id) > -1,'disabled':community.media.userID === user.id || !community.media,'voted':community.media.votes.mehs.length}" ng-click="meh()">
+              <div class="head">
+                <i class="mdi mdi-chevron-down"></i>
+                Meh
+              </div>
+              <div class="total">{{ community.media.votes.mehs.length || 0 }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tray">
+        <div class="chat" ng-show="tabIndex === 0" ng-click="sizeChat()">
+          <div class="settings">
+            <div class="setting mdi mdi-bell"></div>
+            <div class="setting mdi mdi-emoticon"></div>
+            <div class="setting mdi mdi-at"></div>
+            <div class="popout mdi mdi-open-in-new"></div>
+          </div>
+          <div class="messages" kyou-container>
+            <div class="version">Welcome to the Phynix alpha.</div>
+            <div class="welcome" ng-show="community.meta.welcomeMessage">{{ community.meta.welcomeMessage }}</div>
+           <!--  <div class="message version">Welcome to the Phynix alpha.</div>
+            <div class="message welcome" ng-show="community.meta.welcomeMessage">{{ community.meta.welcomeMessage }}</div>
+            <div class="message" ng-class="{'me':message.userID === user.id, 'emote':message.emote, 'log': message.log}" ng-repeat="message in community.chat">
+              <span class="content" ng-if="!message.log">
+                <span class="username">{{ users[message.userID].displayname }}</span>
+                {{ message.message }}
+              </span>
+              <div class="timestamp" ng-if="!message.log">{{ (message.now || moment(message.created)).format('HH:mm') }}</div>
+              <span class="content" ng-if="message.log">{{ message.text }}</span>
+            </div> -->
+          </div>
+          <form id="chat-input">
+            <input class="chat-input" type="text" maxlength="255" placeholder="Click here to chat" autocomplete="false">
+          </form>
+        </div>
+        <div class="population" ng-show="tabIndex === 1">
+          <div class="user" ng-repeat="user in community.users | orderBy:'displayname'">
+            {{ user.displayname }}
+          </div>
+        </div>
+        <div class="waitlist" ng-show="tabIndex === 2">
+          <div class="user" ng-repeat="user in community.waitlist">
+            <span class="position">{{ $index + 1 }}</span>
+            <span class="name">{{ getUser(user).displayname }}</span>
+          </div>
+        </div>
+        <div class="history" ng-show="tabIndex === 3" ng-class="{'grid':views.playlistViewType === 1}" kyou-container="community.meta.history">
+          <!-- <div class="item" ng-repeat="item in community.meta.history" ng-dblclick="itemPreview(item);"  data-position="{{ $index + 1 }}" data-id="{{ item.id }}"  data-cid="{{ item.contentID }}" data-ct="{{ item.type }}">
+            <div class="image" style="background-image:url({{item.image}});"></div>
+            <div class="artist">{{ item.userID }}</div>
+            <div class="title">{{ item.artist + ' - ' + item.title }}</div>
+            <div class="meta">
+              <div class="timestamp">{{ toDuration(item.duration) }}</div>
+              <div class="votes">
+                <span class="vote woot"><i class="mdi mdi-chevron-up"></i>{{ item.woots }}</span>
+                <span class="vote save"><i class="mdi mdi-star"></i>{{ item.saves }}</span>
+                <span class="vote meh"><i class="mdi mdi-chevron-down"></i>{{ item.mehs }}</span>
+              </div>
+            </div>
+          </div> -->
+          <div class="item grid hidden" ng-repeat="item in community.meta.history" ng-dblclick="itemPreview(item);" data-position="{{ $index + 1 }}" kyou-item="item" in-view="renderItem($event, $inview)" kyou-item-over-class="over" kyou-item-drag-class="dragging" kyou-item-on-drag="kyou.item.drag" kyou-item-on-drop="kyou.item.drop">
+            <div class="image" style="background-image: url({{item.image}})"></div>
+            <div class="header">
+              <div class="title">{{ item.title }}</div>
+              <div class="artist">{{ item.artist }}</div>
+            </div>
+            <div class="footer">
+              <div class="meta">
+                <div class="m position">
+                  <i class="pound mdi mdi-pound"></i>
+                  {{ $index + 1 }}
+                </div>
+                <i class="m type mdi" ng-class="{ 'youtube mdi-youtube-play': item.type === 1, 'soundcloud mdi-soundcloud': item.type === 2 }"></i>
+                <div class="m duration">{{ toDuration(item.duration) }}</div>
+              </div>
+              <div class="actions">
+                <i class="action add mdi mdi-plus"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="playlist" ng-click="views.playlistDeployed = !views.playlistDeployed; $timeout(sizePlaylistItems, 250)">
+        <i class="icon mdi mdi-menu"></i>
+        <div class="no-playlist" ng-hide="getActivePlaylist().items.length">
+          <i class="mdi mdi-chevron-right"></i>
+          You need to create a playlist if you want to play
+        </div>
+        <div class="info" ng-show="getActivePlaylist().items.length">
+          <i class="mdi mdi-check"></i>
+          <div class="name">{{ getActivePlaylist().name }}</div>
+          <i class="mdi mdi-chevron-right"></i>
+          <div class="item">{{ getActivePlaylist().items[0].artist + ' - ' + getActivePlaylist().items[0].title }}</div>
+        </div>
+      </div>
+      <div class="social">
+        <a target="_blank" href="https://facebook.com/Phynixio-1025652290840438/" class="mdi mdi-facebook-box"></a>
+        <a target="_blank" href="https://twitter.com/phynixio" class="mdi mdi-twitter"></a>
+        <a target="_blank" href="https://reddit.com/r/Phynixio" class="mdi mdi-reddit"></a>
+      </div>
+      <div class="tray">
+        <div class="section" ng-click="tabIndex = 0" ng-class="{'active':tabIndex === 0}">
+          <i class="mdi mdi-comment-multiple-outline"></i>
+        </div>
+        <div class="section" ng-click="tabIndex = 1" ng-class="{'active':tabIndex === 1}">
+          <i class="mdi mdi-account-multiple"></i>
+          {{ community.users.length || 0 }}
+        </div>
+        <div class="section" ng-click="tabIndex = 2" ng-class="{'active':tabIndex === 2}">
+          <i class="mdi mdi-account-convert"></i>
+          <span ng-show="community.waitlist.indexOf(user.id) > -1">{{ community.waitlist.indexOf(user.id) + 1 }}</span>
+          <span ng-class="{'sub':community.waitlist.indexOf(user.id) !== -1}">{{ community.waitlist.length }}</span>
+        </div>
+        <div class="section" ng-click="tabIndex = 3; sizePlaylistItems()" ng-class="{'active':tabIndex === 3}">
+          <i class="mdi mdi-history"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="playlist-modal" ng-class="{'showing':views.playlistDeployed}">
+    <div class="header">
+      <div class="icon mdi mdi-chevron-down" ng-click="views.playlistDeployed = !views.playlistDeployed"></div>
+      <div class="search">
+        <i class="icon mdi mdi-magnify"></i>
+        <form class="search-form">
+          <input placeholder="Search for media">
+        </form>
+        <i class="service mdi mdi-youtube-play"></i>
+      </div>
+      <div class="sizes">
+        <i class="size mdi mdi-view-list" ng-click="settings.view.itemType = 0" ng-class="{'active': settings.view.itemType === 0}"></i>
+        <i class="size mdi mdi-view-module" ng-click="settings.view.itemType = 1" ng-class="{'active': settings.view.itemType === 1}"></i>
+      </div>
+    </div>
+    <div class="container">
+      <div class="left">
+        <div class="title">Your Playlists</div>
+        <div class="playlists" kyou-container>
+          <div class="playlist" ng-class="{'active': playlist.active, 'viewing': views.playlist === playlist.id, 'capacity': playlist.items.length >= 500}" ng-repeat="playlist in user.playlists | orderBy:'name'" ng-click="views.playlist = playlist.id; views.playlistView = 0; sizePlaylistItems()" data-id="{{ playlist.id }}" kyou-dropzone kyou-dropzone-on-drop="kyou.playlist.drop" kyou-dropzone-on-over="kyou.playlist.over" kyou-dropzone-on-leave="kyou.playlist.leave" kyou-dropzone-over-class="over" kyou-dropzone-data="playlist">
+            <i class="icon mdi mdi-check" ng-click="iconActivatePlaylist($event)"></i>
+            <div class="name">{{ playlist.name }}</div>
+            <div class="count">{{ playlist.items.length || 0 }}</div>
+          </div>
+        </div>
+        <div class="functions">
+          <div class="function import">
+            <i class="mdi mdi-import"></i>
+            Import
+          </div>
+          <div class="function create" ng-click="showPlaylistCreateModal()">
+            <i class="mdi mdi-playlist-plus"></i>
+            Create
+          </div>
+        </div>
+      </div>
+      <div class="right" ng-class="{'searching': views.searching}">
+        <div class="playlist" ng-show="views.playlistView === 0">
+          <div class="header" ng-show="getPlaylist(views.playlist).items">
+            <div class="meta">
+              <div class="name">{{ getPlaylist(views.playlist).name }}</div>
+              <div class="info">{{ (getPlaylist(views.playlist).items.length || 0) + pluralize(getPlaylist(views.playlist).items.length || 0, ' item')  }} - {{ getPlaylistDuration(views.playlist, true) }}</div>
+            </div>
+            <i class="action edit mdi mdi-pencil"></i>
+            <i class="action shuffle mdi mdi-shuffle-variant"></i>
+            <i class="action delete mdi mdi-delete" ng-click="deletePlaylist(getPlaylist(views.playlist))"></i>
+          </div>
+          <div class="items" ng-class="{'grid': settings.view.itemType === 1}" data-playlist-id="{{ views.playlist }}" in-view-container kyou-container-side-position="settings.view.itemType === 1" kyou-container>
+            <div class="float-text" ng-hide="getPlaylist(views.playlist).items.length">You don't have any items in this playlist</div>
+            <div class="item hidden" ng-repeat="item in getPlaylist(views.playlist).items" ng-class="{'grid': settings.view.itemType === 1}" ng-dblclick="itemPreview(item)" kyou-item="item" kyou-item-side-position="settings.view.itemType === 1" in-view="renderItem($event, $inview)" kyou-item-over-class="over" kyou-item-drag-class="dragging" kyou-item-on-drag="kyou.item.drag" kyou-item-on-drop="kyou.item.drop">
+              <div class="image" style="background-image: url({{item.image}})"></div>
+              <div class="header">
+                <div class="title">{{ item.title }}</div>
+                <div class="artist">{{ item.artist }}</div>
+              </div>
+              <div class="footer">
+               <div class="meta">
+                <div class="m position">
+                  <i class="pound mdi mdi-pound"></i>
+                  {{ $index + 1 }}
+                </div>
+                <i class="m type mdi" ng-class="{ 'youtube mdi-youtube-play': item.type === 1, 'soundcloud mdi-soundcloud': item.type === 2 }"></i>
+                <div class="m duration">{{ toDuration(item.duration) }}</div>
+              </div>
+                <div class="actions">
+                  <i class="action add mdi mdi-plus"></i>
+                  <i class="action search mdi mdi-magnify" ng-click="search(item.artist + ' - ' + item.title)"></i>
+                  <i class="action edit mdi mdi-pencil" ng-click="editPlaylistItem(item)"></i>
+                  <i class="action delete mdi mdi-delete" ng-click="deletePlaylistItem(item)" ng-class="{'disabled':getPlaylist(views.playlist).items.length === 1}"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="search" ng-show="views.playlistView === 1">
+          <div class="header" ng-hide="views.searching">
+            <i class="icon mdi mdi-magnify"></i>
+            <div class="query">{{ views.searchQuery }}</div>
+          </div>
+          <div class="items" ng-class="{'grid': settings.view.itemType === 1}" ng-hide="views.searching" in-view-container kyou-container>
+            <div class="float-text" ng-show="!views.searchResults.length && !views.searching">No results for {{ views.searchQuery }}</div>
+            <div class="item hidden" ng-class="{'grid': settings.view.itemType === 1}" ng-repeat="item in views.searchResults" ng-dblclick="itemPreview(item)" kyou-item="item" in-view="renderItem($event, $inview)" kyou-item kyou-item-over-class="over" kyou-item-drag-class="dragging" kyou-item-on-drag="kyou.item.drag" kyou-item-on-drop="kyou.item.drop">
+              <div class="image" style="background-image: url({{item.image}})"></div>
+              <div class="header">
+                <div class="title">{{ item.title }}</div>
+                <div class="artist">{{ item.artist }}</div>
+              </div>
+              <div class="footer">
+               <div class="meta">
+                <div class="m position">
+                  <i class="pound mdi mdi-pound"></i>
+                  {{ $index + 1 }}
+                </div>
+                <i class="m type mdi" ng-class="{ 'youtube mdi-youtube-play': item.type === 1, 'soundcloud mdi-soundcloud': item.type === 2 }"></i>
+                <div class="m duration">{{ toDuration(item.duration) }}</div>
+              </div>
+                <div class="actions">
+                  <i class="action add mdi mdi-plus"></i>
+                  <i class="action search mdi mdi-magnify" ng-click="search(item.artist + ' - ' + item.title)"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="loader" ng-show="views.searching"></div>
+        </div>
+        <!-- <div class="items" data-playlist-id="{{ views.playlistView }}" in-view-container scroll-name="playlist-items" scroll-pane html-sortable="sortable.playlist" ng-model="playlists[views.playlistView].items || emptyPlaylist">
+          <div class="no-items" ng-hide="getPlaylist(views.playlistView).items.length">You don't have any items in this playlist</div>
+
+          <div class="item" ng-class="{'grid': settings.view.itemType === 1}" ng-repeat="item in getPlaylist(views.playlistView).items" ng-dblclick="itemPreview(item);" data-position=" {{ $index + 1 }}" data-id="{{ item.id }}" data-cid="{{ item.contentID }}" data-ct="{{ item.type }}" in-view="renderItem($event, $inview)">
+            <div class="image" data-url="{{item.image}}"></div>
+            <div class="header">
+              <div class="title">{{ item.title }}</div>
+              <div class="artist">{{ item.artist }}</div>
+            </div>
+            <div class="footer">
+              <div class="meta">
+                <div class="m duration">{{ toDuration(item.duration) }}</div>
+                <i class="m type mdi" ng-class="{ 'youtube mdi-youtube-play': item.type === 1, 'soundcloud mdi-soundcloud': item.type === 2 }"></i>
+                <div class="m position">
+                  <i class="pound mdi mdi-pound"></i>
+                  {{ $index + 1 }}
+                </div>
+              </div>
+              <div class="actions">
+                <i class="action search mdi mdi-magnify"></i>
+                <i class="action edit mdi mdi-pencil"></i>
+                <i class="action delete mdi mdi-delete"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="item" ng-class="{'grid':views.playlistViewType === 1}" ng-repeat="item in getPlaylist(views.playlistView).items" ng-dblclick="itemPreview(item);" data-position="{{ $index + 1 }}" data-id="{{ item.id }}"  data-cid="{{ item.contentID }}" data-ct="{{ item.type }}">
+            <div class="image" style="background-image:url({{item.image}});"></div>
+            <div class="artist">{{ item.artist }}</div>
+            <div class="title">{{ item.title }}</div>
+            <div class="duration">{{ toDuration(item.duration) }}</div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+  <script src="/s/js/app.js" type="text/javascript"></script>
+</body>
+</html>

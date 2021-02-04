@@ -1,0 +1,562 @@
+@{
+  import (
+    "phynix/templates/layout/base"
+    "phynix/models"
+    "math"
+  )
+
+  var communities []models.Community
+}
+
+@section title {
+  @raw("Phynix")
+}
+
+@section head {
+  <script src="/s/js/jquery.js" type="text/javascript"></script>
+  <script src='https://www.google.com/recaptcha/api.js'></script>
+  <style type="text/css">
+    .loader {
+      height: 5px;
+      overflow: hidden;
+      position: relative;
+      background: rgba(255, 102, 0, 0.4);
+    }
+
+    .loader::before,
+    .loader::after {
+      content: '';
+      height: 5px;
+      position: absolute;
+      background: #FF6600;
+    }
+
+    .loader::before {
+      animation: loader-increase 2s infinite;
+    }
+
+    .loader::after {
+      animation: loader-decrease 2s 0.5s infinite;
+    }
+
+    @@keyframes loader-increase {
+     from { left: -5%; width: 5%; }
+     to { left: 130%; width: 100%;}
+    }
+
+    @@keyframes loader-decrease {
+     from { left: -80%; width: 80%; }
+     to { left: 110%; width: 10%;}
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 400px;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.6) 75%, rgba(0, 0, 0, 0.8) 100%), url(/s/banner.jpg);
+      background-size: cover;
+      background-position-x: center;
+      background-repeat: no-repeat;
+    }
+
+    .wrapper {
+      max-width: 1586px;
+    }
+
+    @@media all and (max-width: 1586px) {
+      .wrapper {
+        max-width: 1064px;
+      }
+    }
+
+    @@media all and (max-width: 1064px) {
+      .wrapper {
+        max-width: 542px;
+      }
+    }
+
+    .wrapper > .content > .hero {
+      height: 200px;
+      background-image: url(/s/icon.png);
+      background-size: 128px 128px;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    
+    .wrapper > .content > .title {
+      font-size: 24px;
+    }
+
+    .wrapper > .content > .title > .text {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    .wrapper > .content > .user {
+      margin: 40px 0;
+      line-height: 60px;
+    }
+
+    .wrapper > .content > .user > .button {
+      display: inline-block;
+      padding: 0 30px;
+      border: 1px solid white;
+      border-radius: 2px;
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      transition: background .2s ease-in-out;
+      -webkit-transition: background .2s ease-in-out;
+      -moz-transition: background .2s ease-in-out;
+    }
+
+    .wrapper > .content > .user > .button:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .wrapper > .content > .user > .button[data-type="login"] {
+      margin-right: 5%;
+    }
+
+    .wrapper > .content > .user > .button[data-type="signup"] {
+      margin-left: 5%;
+    }
+
+    .wrapper > .content > .communities {
+      overflow: hidden;
+    }
+
+    .wrapper > .content > .communities > .community {
+      display: inline-block;
+      box-sizing: border-box;
+      background-size: cover;
+      background-position: center;
+      width: 512px;
+      height: 288px;
+      margin: 5px;
+      padding: 20px;
+      text-align: left;
+      position: relative;
+      border-radius: 2px;
+      float: left;
+    }
+
+    .wrapper > .content > .communities > .community > .title {
+      color: #fff;
+      font-size: 25px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .wrapper > .content > .communities > .community > .artist {
+      color: #e0e0e0;
+      font-size: 15px;
+    }
+
+    .wrapper > .content > .communities > .community > .info {
+      bottom: 0;
+      left: 0;
+      position: absolute;
+      font-size: 22px;
+      display: block;
+      color: #e0e0e0;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 20px;
+    }
+
+    .wrapper > .content > .communities > .community > .info > .name {
+      
+    }
+
+    .wrapper > .content > .communities > .community > .info > .population,
+    .wrapper > .content > .communities > .community > .info > .waitlist {
+      float: right;
+    }
+
+    .wrapper > .content > .communities > .community > .info > .population {
+      margin-left: 10px;
+    }
+
+    .wrapper > .content > .communities > .community > .info > .waitlist > .mdi,
+    .wrapper > .content > .communities > .community > .info > .population > .mdi {
+      margin-right: 10px;
+      color: #808691;
+    }
+
+    .modal {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      background: rgba(0,0,0,0.6);
+      display: none;
+    }
+
+    .modal > .container {
+      -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      left: 50%;
+      top: 50%;
+      background: #1A2026;
+      width: 350px;
+      position: absolute;
+      text-align: center;
+    }
+
+    .modal > .container > .header {
+      width: 100%;
+      height: 75px;
+      font-size: 20px;
+      background: #222937;
+    }
+
+    .modal > .container > .header > .tab {
+      width: 50%;
+      height: 75px;
+      line-height: 75px;
+      display: inline-block;
+      float: left;
+      cursor: pointer;
+    }
+
+    .modal > .container > .header > .tab.active {
+      background: #1A2026;
+      cursor: default;
+    }
+
+    .modal > .container > .loader {
+      opacity: 0;
+      -webkit-transition: opacity .2s ease-in-out;
+      -ms-transition: opacity .2s ease-in-out;
+      transition: opacity .2s ease-in-out;
+    }
+
+    .modal > .container > .content {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0px 20px 20px 20px;
+      text-align: center;
+    }
+
+    .modal > .container > .content > .hero {
+      height: 200px;
+      background-image: url(/s/icon.png);
+      background-size: 128px 128px;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .modal > .container > .content > .section {
+      display: none;
+    }
+
+    .modal[data-type="login"] > .container > .content > .section.login,
+    .modal[data-type="signup"] > .container > .content > .section.signup {
+      display: block;
+    }
+
+    .modal > .container > .content > .section .tag {
+      margin-bottom: 20px;
+    }
+
+    .modal > .container > .content > .section .message {
+      padding: 20px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .modal > .container > .content > .section .message:first-letter {
+      text-transform: capitalize;
+    }
+
+    .modal > .container > .content > .section input {
+      outline: 0;
+      border: 0;
+      background: #222937;
+      box-sizing: border-box;
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      color: white;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .modal > .container > .content > .section .combine > input {
+      width: 49%;
+      float: left;
+    }
+
+    .modal > .container > .content > .section .combine > input:last-child {
+      float: right;
+    }
+
+    .modal > .container > .content > .section .g-recaptcha {
+      display: inline-block;
+    }
+
+    .modal > .container > .content > .section button {
+      outline: 0;
+      border: 0;
+      background: #03A9F4;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 20px;
+      font-size: 20px;
+      margin-top: 10px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .modal[data-disabled="true"] > .container > .content > .section button {
+
+    }
+
+    @@media all and (max-width: 552px) {
+      .community {
+        width: 440px!important;
+        height: 248px!important;
+      }
+    }
+
+    @@media all and (max-width: 490px) {
+      .community {
+        width: 390px!important;
+        height: 219px!important;
+      }
+    }
+  </style>
+}
+
+@section content {
+  <div class="hero"></div>
+  <div class="title">
+    Phynix
+    <div class="text">The best social media tool that incorporates the power of music.</div>
+  </div>
+  <div class="user">
+    <div class="button" data-type="login">Login</div>
+    <div class="button" data-type="signup">Sign up</div>
+  </div>
+  <div class="communities">
+    @{
+      for _, community := range communities[:int(math.Min(float64(len(communities)), 10))] {
+        <a class="community" href="/@community.Slug" style="background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.6) 75%, rgba(0, 0, 0, 0.8) 100%), url(@community.Media.Image)">
+          <div class="title">@community.Media.Title</div>
+          <div class="artist">@community.Media.Artist</div>
+          <div class="info">
+            <span class="name">@community.Name</span>
+            <span class="population"><i class="mdi mdi-account-multiple"></i>@community.Population</span>
+            <span class="waitlist"><i class="mdi mdi-account-convert"></i>@community.Waitlist</span>
+          </div>
+        </a>
+      }
+    }
+  </div>
+}
+
+<div class="modal">
+  <div class="container">
+    <div class="header">
+      <div class="tab active" data-type="login">Login</div>
+      <div class="tab" data-type="signup">Sign up</div>
+    </div>
+    <div class="loader"></div>
+    <div class="content">
+      <div class="hero"></div>
+      <div class="section login">
+        <form id="login-form">
+          <div class="tag">Login to your Phynix account</div>
+          <div class="message"></div>
+          <input class="email" placeholder="Email" maxlength="100">
+          <input class="password" placeholder="Password" maxlength="72" type="password">
+          <button type="submit">Login</button>
+        </form>
+      </div>
+      <div class="section signup">
+        <form id="signup-form">
+          <div class="tag">Create an account</div>
+          <div class="message"></div>
+          <div class="combine">
+            <input class="displayname" placeholder="Displayname" maxlength="20">
+            <input class="username" placeholder="Username" maxlength="20" data-has-focussed="false">
+          </div>
+          <input class="email" placeholder="Email" maxlength="100">
+            <div class="combine">
+            <input class="password" placeholder="Password" maxlength="72" type="password">
+            <input class="password-confirm" placeholder="Confirm password" maxlength="72" type="password">
+          </div>
+          <div class="g-recaptcha" data-sitekey="6LeW_hYTAAAAACTBX2_85rU_Byvo-ycV4tiDtOmR" data-theme="dark"></div>
+          <button type="submit">Signup</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  (function() {
+    var modal = $('.modal');
+    var loader = modal.find('.loader');
+    var loginSection = modal.find('.section.login');
+    var signupSection = modal.find('.section.signup');
+
+    function showMessage(section, type, message) {
+      var colors = {
+        'error': '#F44336',
+        'fail': '#F44336',
+        'ok': '#4CAF50',
+        'success': '#4CAF50'
+      }
+
+      var color = colors[type];
+
+      // don't kill me, using .html since all strings are safe anyway and <br> is useful sometimes
+      section.find('.message').html(message).css({
+        'background-color': color,
+        'display': 'block'
+      });
+    }
+
+    function hideMessage(section) {
+      sectiom.find('.message').css('display', 'none');
+    }
+
+    $('body').keydown(function(e) {
+      if (e.keyCode === 27) modal.fadeOut(300);
+    });
+
+    modal.click(function(e) {
+      if (e.target !== this) return;
+      $(this).fadeOut(300);
+    });
+
+    $('.user .button, .modal .tab').click(function() {
+      modal.find('.tab').removeClass('active');
+      modal.find(`.tab[data-type="${$(this).attr('data-type')}"]`).addClass('active');
+
+      modal.attr('data-type', $(this).attr('data-type'));
+      modal.fadeIn(300);
+    });
+
+    $('form').submit(function(e) {
+      e.preventDefault();
+    });
+
+    $('#login-form').submit(function(e) {
+      if (modal.attr('data-disabled') === 'true') return;
+
+      var payload = {
+        email: modal.find('.login .email').val(),
+        password: modal.find('.login .password').val()
+      }
+
+      modal.attr('data-disabled', 'true');
+      loader.css('opacity', '1');
+      $.ajax({
+        url: '/_/login',
+        method: 'POST',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(payload)
+      })
+      .done(function(e) {
+        console.info(e.data);
+        localStorage.setItem('token', e.data.token);
+        window.location = '/dashboard';
+      })
+      .fail(function(e, _, msg) {
+        showMessage(loginSection, 'fail', (e.responseJSON && e.responseJSON.error) || msg);
+      })
+      .always(function() {
+        loader.css('opacity', '0');
+        modal.attr('data-disabled', 'false');
+      });
+    });
+
+    modal.find('.signup .displayname').keydown(function(e) {
+      setTimeout(function() {
+        var username = $('.signup .username');
+        if (username.val() && username.attr('data-has-focussed') === 'true') return;
+
+        var displayname = $(this).val().toLowerCase();
+
+        var payload = displayname.replace(/[^A-Za-z0-9. _-]/g, '').trim().replace(/ /g, '_');
+
+        username.val(payload);
+      }.bind(this), 1);
+    });
+
+    modal.find('.signup .username').keydown(function(e) {
+      $(this).attr('data-has-focussed', true);
+    });
+
+    $('#signup-form').submit(function(e) {
+      if (modal.attr('data-disabled') === 'true') return;
+
+      var payload = {
+        displayname: modal.find('.signup .displayname').val().trim(),
+        username: modal.find('.signup .username').val().trim(),
+        email: modal.find('.signup .email').val().trim(),
+        password: modal.find('.signup .password').val(),
+        passwordConfirm: modal.find('.signup .password-confirm').val(),
+        captcha: grecaptcha.getResponse()
+      }
+
+      if (payload.password !== payload.passwordConfirm) {
+        showMessage(signupSection, 'error', 'Passwords do not match');
+        return;
+      }
+
+      delete payload.passwordConfirm;
+
+      var tests = {
+        displayname: /^.{2,20}$/,
+        username: /^[a-z0-9._-]{2,20}$/,
+        email: /^(?=.{5,100}$).+@.+\..+/,
+        password: /^.{2,72}$/
+      }
+
+      for (var i in tests) {
+        if (!tests[i].test(payload[i])) {
+          showMessage(signupSection, 'error', i + ' invalid')
+          return;
+        }
+      }
+
+      if (!payload.captcha) {
+        showMessage(signupSection, 'error', 'Captcha must be valid');
+        return;
+      }
+
+      modal.attr('data-disabled', 'true');
+      loader.css('opacity', '1');
+      $.ajax({
+        url: '/_/signup',
+        method: 'POST',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(payload)
+      })
+      .done(function(e) {
+        if (e.data.token) {
+          localStorage.setItem('token', e.data.token);
+          window.location = '/dashboard';
+          return;
+        }
+        showMessage(signupSection, 'ok', 'Awesome!<br>Check your email to verify your account');
+      })
+      .fail(function(e, _, msg) {
+        grecaptcha.reset();
+        showMessage(signupSection, 'fail', e.responseJSON.error || msg);
+      })
+      .always(function() {
+        loader.css('opacity', '0');
+        modal.attr('data-disabled', 'false');
+      });
+    });
+  })();
+</script>

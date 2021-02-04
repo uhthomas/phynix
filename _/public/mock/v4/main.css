@@ -1,0 +1,457 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	background: #282c35;
+	font-family: 'Open Sans', sans-serif;
+	color: white;
+	font-size: 18px;
+	overflow: hidden;
+	display: flex;
+	background-image: url(/s/bgs/minimal.jpg);
+	background-size: cover;
+	background-position: center;
+}
+
+body:before {
+  content: '';
+  position: absolute;
+  height: 96px;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  background: linear-gradient(rgba(0,0,0,0.4) 0%, transparent 100%);
+}
+
+body:after {
+  content: '';
+  position: absolute;
+  height: 96px;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  background: linear-gradient(transparent 0%, rgba(0,0,0,0.4) 100%);
+}
+
+.text-overflow {  
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.icon { 
+  height: 64px;
+  width: 64px;
+  font-size: 24px;
+  text-align: center;
+  line-height: 64px;
+}
+
+.icon-toggle {
+  height: 64px;
+  width: 64px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+
+.icon-toggle > .icon {
+  top: 0;
+  left: 0;
+  position: absolute;
+  -webkit-transition: all .2s cubic-bezier(.4,0,.2,1);
+  -moz-transition: all .2s cubic-bezier(.4,0,.2,1);
+  -ms-transition: all .2s cubic-bezier(.4,0,.2,1);
+  -o-transition: all .2s cubic-bezier(.4,0,.2,1);
+  transition: all .2s cubic-bezier(.4,0,.2,1);
+}
+
+.icon-toggle > .icon:first-child {
+  opacity: 0;
+  -webkit-transform: perspective(1px) rotate(0deg);
+  -moz-transform: perspective(1px) rotate(0deg);
+  -ms-transform: perspective(1px) rotate(0deg);
+  -o-transform: perspective(1px) rotate(0deg);
+  transform: perspective(1px) rotate(0deg);
+}
+
+.icon-toggle.active > .icon:first-child {
+  opacity: 1;
+  -webkit-transform: perspective(1px) rotate(180deg);
+  -moz-transform: perspective(1px) rotate(180deg);
+  -ms-transform: perspective(1px) rotate(180deg);
+  -o-transform: perspective(1px) rotate(180deg);
+  transform: perspective(1px) rotate(180deg);
+}
+
+.icon-toggle > .icon:last-child {
+  opacity: 1;
+  -webkit-transform: perspective(1px) rotate(0deg);
+  -moz-transform: perspective(1px) rotate(0deg);
+  -ms-transform: perspective(1px) rotate(0deg);
+  -o-transform: perspective(1px) rotate(0deg);
+  transform: perspective(1px) rotate(0deg);
+}
+
+.icon-toggle.active > .icon:last-child {
+  opacity: 0;
+  -webkit-transform: perspective(1px) rotate(180deg);
+  -moz-transform: perspective(1px) rotate(180deg);
+  -ms-transform: perspective(1px) rotate(180deg);
+  -o-transform: perspective(1px) rotate(180deg);
+  transform: perspective(1px) rotate(180deg);
+}
+
+#header {
+  display: flex;
+  position: absolute;
+  height: 64px;
+  width: 100%;
+  flex: 1;
+  z-index: 2;
+}
+
+#header > .drawer {
+  min-width: 64px;
+}
+
+#header > .meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-right: auto;
+}
+
+#header > .meta > .primary {  }
+
+#header > .meta > .secondary {
+  font-size: 15px;
+  color: #eee;
+}
+
+/* #header > > .toggle {  } */
+
+#drawer {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 64px 0px 0px 0px;
+  left: 0;
+  height: 100%;
+  width: 260px;
+  opacity: 0;
+  transform: translateX(-260px);
+  z-index: 0;
+  -webkit-transition: all .2s cubic-bezier(.4,0,.2,1);
+  -moz-transition: all .2s cubic-bezier(.4,0,.2,1);
+  -ms-transition: all .2s cubic-bezier(.4,0,.2,1);
+  -o-transition: all .2s cubic-bezier(.4,0,.2,1);
+  transition: all .2s cubic-bezier(.4,0,.2,1);
+}
+
+#drawer:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 150%;
+  z-index: -1;
+  background: linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 100%);
+}
+
+#drawer.open {
+  transform: translateX(0px);
+  opacity: 1;
+}
+
+#drawer > .item {
+  height: 64px;
+  box-sizing: border-box;
+  padding-right: 16px;
+  display: flex;
+  position: relative;
+  cursor: pointer;
+}
+
+#drawer > .item:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 150%;
+  z-index: -1;
+  background: linear-gradient(to right, rgba(0,0,0,0.2) 0%, transparent 100%);
+  -webkit-transition: opacity .2s ease;
+  -moz-transition: opacity .2s ease;
+  -ms-transition: opacity .2s ease;
+  -o-transition: opacity .2s ease;
+  transition: opacity .2s ease;
+  opacity: 0;
+}
+
+#drawer > .item:hover:before {
+  opacity: 1;
+}
+
+#drawer > .item > .icon {
+  min-width: 64px;
+}
+
+#drawer > .item > .text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#drawer > .item > .text > .primary {  }
+
+#drawer > .item > .text > .secondary {
+  font-size: 15px;
+  color: #eee;
+}
+
+#content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  -webkit-transition: all .2s cubic-bezier(.4,0,.2,1);
+  -moz-transition: all .2s cubic-bezier(.4,0,.2,1);
+  -ms-transition: all .2s cubic-bezier(.4,0,.2,1);
+  -o-transition: all .2s cubic-bezier(.4,0,.2,1);
+  transition: all .2s cubic-bezier(.4,0,.2,1);
+}
+
+#content.drawer-open {
+  margin-left: 260px;
+}
+
+#content.sidebar-open {
+  margin-right: 420px;
+}
+
+#content > .media {
+  width: 640px;
+  height: 360px;
+  margin: auto;
+  box-shadow: 0 19px 60px rgba(0,0,0,0.3), 0 15px 20px rgba(0,0,0,0.22);
+}
+
+#content > .media video {
+  width: 100%;
+  height: 100%;
+}
+
+#content > .meta {
+  position: relative;
+  display: flex;
+  height: 64px;
+  min-height: 64px;
+}
+
+#content > .meta > .icon {
+  flex: 1;
+  cursor: pointer;
+  position: relative;
+}
+
+#content > .meta > .icon:after {
+  content: '';
+  opacity: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  -webkit-transition: opacity .2s ease;
+  -moz-transition: opacity .2s ease;
+  -ms-transition: opacity .2s ease;
+  -o-transition: opacity .2s ease;
+  transition: opacity .2s ease;
+}
+
+#content > .meta > .icon:hover:after {
+  opacity: .6;
+}
+
+#content > .meta > .icon.active:after {
+  opacity: 1;
+}
+
+#content > .meta > .icon.up {
+  color: #6fbe4b;
+}
+
+#content > .meta > .icon.up:after {
+  background: linear-gradient(transparent 0%, rgba(111, 190, 75, .6) 100%);
+}
+
+#content > .meta > .icon.save {
+  color: #03A9F4;
+}
+
+#content > .meta > .icon.save:after {
+  background: linear-gradient(transparent 0%, rgba(3, 169, 244, .6) 100%);  
+}
+
+#content > .meta > .icon.down {
+  color: #F44336;
+}
+
+#content > .meta > .icon.down:after {
+  background: linear-gradient(transparent 0%, rgba(244, 67, 54, .6) 100%);  
+}
+
+#content > .meta > .icon.waitlist {
+  color: white;
+}
+
+#content > .meta > .icon.waitlist:after {
+  background: linear-gradient(transparent 0%, rgba(255, 255, 255, .6) 100%);  
+}
+
+#sidebar {
+  position: absolute;
+  box-sizing: border-box;
+  background: rgba(0,0,0,0.4);
+  padding: 64px 0px 0px 0px;
+  display: flex;
+  flex-direction: column;
+  right: 0;
+  height: 100%;
+  width: 420px;
+  opacity: 0;
+  transform: translateX(420px);
+  z-index: 0;
+  -webkit-transition: all .2s cubic-bezier(.4,0,.2,1);
+  -moz-transition: all .2s cubic-bezier(.4,0,.2,1);
+  -ms-transition: all .2s cubic-bezier(.4,0,.2,1);
+  -o-transition: all .2s cubic-bezier(.4,0,.2,1);
+  transition: all .2s cubic-bezier(.4,0,.2,1);
+}
+
+#sidebar.open {
+  transform: translateX(0px);
+  opacity: 1;
+}
+
+#sidebar > .content {
+  display: flex;
+  flex: 1;
+  margin-left: 8px;
+}
+
+#sidebar > .content > .chat {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+#sidebar > .content > .chat > .messages {
+  overflow: auto;
+  flex: 1;
+}
+
+#sidebar > .content > .chat > .messages > .message {
+  display: flex;
+  box-sizing: border-box;
+  padding: 8px 8px 8px 0px;
+  /* box-shadow: inset 0 -1px 0 0 rgba(255, 255, 255, .6); */
+}
+
+#sidebar > .content > .chat > .messages > .message > .content {
+  flex: 1;
+  overflow: hidden;
+}
+
+#sidebar > .content > .chat > .messages > .message > .content > .user {
+
+}
+
+#sidebar > .content > .chat > .messages > .message > .content > .user {
+  color: #9E9E9E;
+  display: inline-block;
+}
+
+#sidebar > .content > .chat > .messages > .message > .content > .user.admin {
+  color: #03A9F4;
+}
+
+#sidebar > .content > .chat > .messages > .message > .content > .user > .rank {  }
+
+#sidebar > .content > .chat > .messages > .message > .content > .user > .name {
+  font-size: 15px;
+  display: inline-block;
+}
+
+#sidebar > .content > .chat > .messages > .message > .content > .text {
+  word-wrap: break-word;
+  font-size: 16px;
+}
+
+#sidebar > .content > .chat > .messages > .message > .img {
+  margin: auto 8px 0px 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-image: url(rsz_uau4.png);
+}
+
+#sidebar > .content > .chat > .chat-form {
+  display: flex;
+}
+
+#sidebar > .content > .chat > .chat-form > .chat-input {
+  height: 48px;
+  background: none;
+  outline: 0;
+  border: 0;
+  color: white;
+  flex: 1;
+}
+
+#sidebar > .content > .chat > .chat-form > .icon {
+  line-height: 48px;
+  height: 48px;
+  width: 48px;
+}
+
+#sidebar > .footer {
+  position: relative;
+  display: flex;
+  height: 64px;
+}
+
+#sidebar > .footer > .icon {
+  flex: 1;
+  cursor: pointer;
+  opacity: .8;
+  -webkit-transition: all .2s ease;
+  -moz-transition: all .2s ease;
+  -ms-transition: all .2s ease;
+  -o-transition: all .2s ease;
+  transition: all .2s ease;
+}
+
+#sidebar > .footer > .icon:hover {
+  opacity: 1;
+}
+
+#sidebar > .footer > .icon.active {
+  opacity: 1;
+  box-shadow: inset 0 -2px 0 0 white;
+}

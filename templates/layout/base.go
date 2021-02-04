@@ -1,0 +1,20 @@
+package layout
+
+import (
+	"bytes"
+)
+
+func Base(body string, title string, head string, content string) string {
+	var _buffer bytes.Buffer
+	_buffer.WriteString("\n\n\n\n<!doctype html>\n\n<html>\n\n<head>\n\n  <title>")
+	_buffer.WriteString((title))
+	_buffer.WriteString("</title>\n\n  <meta charset=\"utf-8\">\n\n  <link rel=\"shortcut icon\" href=\"/favicon.ico\">\n\n  <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,300,700' rel='stylesheet' type='text/css'>\n\n  <link href=\"/s/css/materialdesignicons.min.css\" rel=\"stylesheet\" type=\"text/css\" media=\"all\">\n\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\n  <script>\n\n    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){\n\n    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),\n\n    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)\n\n    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');\n\n\n\n    ga('create', 'UA-73065452-1', 'auto');\n\n    ga('send', 'pageview');\n\n  </script>\n\n  <style type=\"text/css\">\n\n    * {\n\n      margin: 0;\n\n      padding: 0;\n\n    }\n\n\n\n    html, body {\n\n      width: 100%;\n\n      height: 100%;\n\n    }\n\n\n\n    body {\n\n      background: #282c35;\n\n      font-family: 'Roboto', sans-serif;\n\n      color: white;\n\n      -webkit-font-smoothing: antialiased;\n\n    }\n\n\n\n    a {\n\n      text-decoration: none;\n\n      color: white;\n\n    }\n\n\n\n    .wrapper {\n\n      position: absolute;\n\n      top: 0;\n\n      left: 0;\n\n      right: 0;\n\n      margin: 0 auto;\n\n      max-width: 1084px;\n\n      min-width: 542px;\n\n      width: 100%;\n\n      box-sizing: border-box;\n\n      padding: 0 10px;\n\n      text-align: center;\n\n      font-size: 20px;\n\n    }\n\n\n\n    .wrapper > .content {\n\n      text-align: center;\n\n      min-height: 400px;\n\n    }\n\n\n\n    .wrapper > .footer {\n\n      width: 100%;\n\n      height: 50px;\n\n      line-height: 50px;\n\n    }\n\n\n\n    .wrapper > .footer .link {\n\n      float: left;\n\n      padding: 8px;\n\n    }\n\n\n\n    .wrapper > .footer > .mdi {\n\n      float: right;\n\n      margin: 8px;\n\n      padding: 8px;\n\n      border-radius: 50%;\n\n    }\n\n\n\n    .wrapper > .footer > .mdi-reddit {\n\n      background: #ff5700;\n\n    }\n\n\n\n    .wrapper > .footer > .mdi-twitter {\n\n      background: #00aced;\n\n    }\n\n\n\n    .wrapper > .footer > .mdi-facebook {\n\n      background: #3b5998;\n\n    }\n\n\n\n    @media all and (max-width: 552px) {\n\n      .wrapper {\n\n        min-width: 470px!important;\n\n      }\n\n    }\n\n\n\n    @media all and (max-width: 490px) {\n\n      .wrapper {\n\n        min-width: 400px!important;\n\n      }\n\n\n\n      .wrapper > .footer {\n\n        text-align: center!important;\n\n      }\n\n\n\n      .wrapper > .footer > .link {\n\n        float: none!important;\n\n      }\n\n\n\n      .wrapper > .footer > .mdi {\n\n        display: none!important;\n\n      }\n\n    }\n\n  </style>\n\n  ")
+	_buffer.WriteString((head))
+	_buffer.WriteString("\n\n</head>\n\n<body>\n\n  <div class=\"wrapper\">\n\n    <div class=\"content\">\n\n      ")
+	_buffer.WriteString((content))
+	_buffer.WriteString("\n\n    </div>\n\n    <div class=\"footer\">\n\n      <a target=\"_blank\" href=\"/blog\" class=\"link\">Blog</a>\n\n      <a target=\"_blank\" href=\"/support\" class=\"link\">Support</a>\n\n      <a target=\"_blank\" href=\"/team\" class=\"link\">Team</a>\n\n      <a target=\"_blank\" href=\"/privacy\" class=\"link\">Privacy</a>\n\n      <a target=\"_blank\" href=\"https://reddit.com/r/Phynixio\" class=\"mdi mdi-reddit\"></a>\n\n      <a target=\"_blank\" href=\"https://twitter.com/phynixio\" class=\"mdi mdi-twitter\"></a>\n\n      <a target=\"_blank\" href=\"https://facebook.com/Phynixio-1025652290840438/\" class=\"mdi mdi-facebook\"></a>\n\n    </div>\n\n  </div>\n\n  ")
+	_buffer.WriteString((body))
+	_buffer.WriteString("\n\n</body>\n\n</html>")
+
+	return _buffer.String()
+}

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <style type="text/css">
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      background: black;
+      background-size: cover;
+      background-position: center;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 75%, rgba(0, 0, 0, 0.6) 100%);
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: .6;
+    }
+  </style>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,300,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+  <canvas id="vis" width="1280" height="720"></canvas>
+  <script type="text/javascript">
+    function getQueryStringValue (key) {  
+      return unescape(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + escape(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));  
+    }
+    var id = getQueryStringValue('id');
+    var clientID = '2d5a9eda4866bc2d96d385db39509df5';
+
+    var audio = new Audio(`https://api.soundcloud.com/tracks/${id}/stream?client_id=${clientID}`);
+    audio.crossOrigin = 'anonymous';
+    audio.currentTime = +getQueryStringValue('start') || 0;
+
+    var ctx = vis.getContext('2d');
+    window.audioContext = window.audioContext || new (AudioContext || webkitAudioContext)();
+    var analyser = audioContext.createAnalyser();
+    var fftSizes = {
+      41000: 4096,
+      48000: 4096,
+      96000: 8192,
+      192000: 16384
+    }
+    analyser.fftSize = fftSizes[audioContext.sampleRate] || 4096;
+    analyser.smoothingTimeConstant = 0.67;
+
+    var src = audioContext.createMediaElementSource(audio);
+    src.connect(analyser);
+    analyser.connect(audioContext.destination);
+    var spacing = 20;
+    var divider = 12;
+    var barWidth = 10;
+    var spacing = 3;
+
+    requestAnimationFrame = requestAnimationFrame || webkitRequestAnimationFrame;
+
+    var last = new Date() * 1 - 1;
+    var fps = 0;
+    function draw() {
+      requestAnimationFrame(draw);
+
+      var arr = new Float32Array(analyser.frequencyBinCount);
+      analyser.getFloatFrequencyData(arr);
+      ctx.clearRect(0, 0, vis.width, vis.height);
+
+      ctx.font = "40px Roboto";
+
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = '#000000';
+      ctx.fillStyle = '#ffffff';
+
+      var now = new Date();
+      var nowFps = 1000 / (now - last);
+      if (now != last) {
+        fps += (nowFps - fps) / 20;
+        last = now;
+      }
+
+      ctx.shadowColor="#000000";
+      ctx.shadowBlur=7;
+      ctx.lineWidth=5;
+      ctx.fillText('' + Math.round(fps), 50, 50);
+      ctx.shadowBlur=0;
+      ctx.fillStyle="#FFFFFF";
+      ctx.fillText('' + Math.round(fps), 50, 50);
+
+      var min = -65.876969601387;
+      var max = 20;
+      arr = generate(1, arr, vis.width, spacing);
+
+      for (var i = 0; i < vis.width / spacing; i++) {
+        var width = barWidth;
+        var height = ((((arr[i] - min) * (max - min)) / divider));
+        var x = (i * (barWidth + spacing));
+        var y = (vis.height - height);
+
+        ctx.fillRect(x, y, width, height);
+        ctx.fillRect(x, y, width, height);
+      }
+    }
+
+    function generate(times, arr, width, spacing) {
+      if (times <= 0) return arr;
+      var payload = [];
+      for (var i = 0; i < width / spacing; i++) {
+        payload.push(arr[i]);
+        payload.push((arr[i] + arr[i + 1]) / 2);
+      }
+      return generate(--times, payload, width, spacing);
+    }
+
+    draw();
+
+   audio.play();
+
+    var req = new XMLHttpRequest();
+    req.onload = function() {
+      var data = JSON.parse(req.responseText);
+      document.getElementsByTagName('body')[0].style.backgroundImage = `url(${data.artwork_url || data.user.avatar_url})`;
+    }
+    req.open('GET', `https://api.soundcloud.com/tracks/${id}?client_id=${clientID}`, true);
+    req.send();
+  </script>
+</body>
+</html>
